@@ -9,10 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Manage Products - UDHAYAMART</title>
+    <title>UDHAYAMART - Products</title>
 
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 
 <body class="shop-page">
@@ -20,182 +19,275 @@
 <header class="shop-header">
 
     <div class="shop-logo">
-        <div class="shop-logo-icon">U</div>
 
-        <h1>UDHAYA<span>MART</span></h1>
+        <div class="shop-logo-icon">
+            U
+        </div>
+
+        <h1>
+            UDHAYA<span>MART</span>
+        </h1>
+
     </div>
 
+    <form action="${pageContext.request.contextPath}/products"
+      method="get"
+      class="search-box">
+
+    <span>⌕</span>
+
+    <input
+        type="text"
+        name="search"
+        value="<%= request.getParameter("search") != null
+                ? request.getParameter("search")
+                : "" %>"
+        placeholder="Search for products, brands and more..."
+    >
+
+</form>
     <div class="header-actions">
 
-        <span class="header-link">Admin</span>
+        <a href="home.jsp" class="header-link">
+            Home
+        </a>
+
+        <a href="#" class="header-link">
+            Wishlist
+        </a>
+
+        <a href="#" class="cart-link">
+            🛒
+            <span class="cart-count">0</span>
+        </a>
 
         <a href="${pageContext.request.contextPath}/logout"
-           class="logout-btn">
-            Logout
-        </a>
+   class="logout-btn">
+    Logout
+</a>
 
     </div>
 
 </header>
 
 
+<nav class="category-nav">
+
+    <a href="products.jsp">All Products</a>
+
+    <a href="#">Electronics</a>
+
+    <a href="#">Fashion</a>
+
+    <a href="#">Home & Kitchen</a>
+
+    <a href="#">Mobiles</a>
+
+    <a href="#">Beauty</a>
+
+    <a href="#">Offers</a>
+
+</nav>
+
+
 <main class="shop-main">
 
-    <div class="section-heading">
+    <section class="content-section">
 
-        <div>
+        <div class="section-heading">
 
-            <div class="section-label">
-                ADMIN
+            <div>
+
+                <div class="section-label">
+                    UDHAYAMART STORE
+                </div>
+
+                <h2>
+                    All Products
+                </h2>
+
             </div>
 
-            <h2>
-                Manage Products
-            </h2>
-
-            <p>
-                View and manage your store products
-            </p>
-
         </div>
 
-    </div>
+        <form action="${pageContext.request.contextPath}/products"
+      method="get"
+      style="margin: 20px 0;">
+
+    <select name="category"
+            onchange="this.form.submit()"
+            style="padding: 10px 15px;
+                   border-radius: 6px;
+                   border: 1px solid #ccc;">
+
+        <option value="">All Categories</option>
+
+        <%
+            java.util.Map<Integer, String> categories =
+                (java.util.Map<Integer, String>)
+                request.getAttribute("categories");
+
+            String selectedCategory =
+                request.getParameter("category");
+        %>
+
+        <% if (categories != null) {
+            for (java.util.Map.Entry<Integer, String> entry
+                    : categories.entrySet()) { %>
+
+            <option value="<%= entry.getKey() %>"
+                <%= String.valueOf(entry.getKey()).equals(selectedCategory)
+                    ? "selected"
+                    : "" %>>
+
+                <%= entry.getValue() %>
+
+            </option>
+
+        <%  }
+           } %>
+
+    </select>
+
+</form>
+<form action="${pageContext.request.contextPath}/products"
+      method="get"
+      style="margin: 20px 0;">
+
+    <input type="number"
+           name="minPrice"
+           placeholder="Min Price"
+           min="0"
+           step="0.01"
+           style="padding:10px;">
+
+    <input type="number"
+           name="maxPrice"
+           placeholder="Max Price"
+           min="0"
+           step="0.01"
+           style="padding:10px;">
+
+    <button type="submit"
+            class="primary-btn">
+        Filter Price
+    </button>
+
+</form>
+       <form action="${pageContext.request.contextPath}/products"
+      method="get"
+      style="margin: 20px 0;">
+
+    <select name="sort"
+            onchange="this.form.submit()"
+            style="padding:10px 15px;
+                   border-radius:6px;
+                   border:1px solid #ccc;">
+
+        <option value="">Sort Products</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="name">Name: A to Z</option>
+
+    </select>
+
+</form>
+
+        <div class="product-grid">
+
+            <%
+                List<Product> products =
+                    (List<Product>) request.getAttribute("products");
+
+                if (products != null && !products.isEmpty()) {
+
+                    for (Product product : products) {
+            %>
+
+                <a href="product-details?id=<%= product.getProductId() %>" class="product-card"></a>
+
+                    <div class="product-image">
+
+                        <%
+                            if (product.getImage() != null
+                                    && !product.getImage().isEmpty()) {
+                        %>
+
+                            <img
+                                src="<%= product.getImage() %>"
+                                alt="<%= product.getProductName() %>"
+                                style="max-width: 100%; max-height: 180px;"
+                            >
+
+                        <%
+                            } else {
+                        %>
+
+                            <span>Product</span>
+
+                        <%
+                            }
+                        %>
+
+                    </div>
 
 
-    <div class="checkout-card">
+                    <div class="product-info">
 
-        <div class="checkout-card-header">
+                        <div class="product-category">
+                            Product
+                        </div>
 
-            <h3>
-                Products
-            </h3>
-
-            <p>
-                All products in your store
-            </p>
-
-        </div>
-
-
-        <div style="overflow-x:auto;">
-
-            <table style="width:100%; border-collapse:collapse;">
-
-                <thead>
-
-                <tr>
-
-                    <th style="padding:12px; text-align:left;">
-                        ID
-                    </th>
-
-                    <th style="padding:12px; text-align:left;">
-                        Product
-                    </th>
-
-                    <th style="padding:12px; text-align:left;">
-                        Price
-                    </th>
-
-                    <th style="padding:12px; text-align:left;">
-                        Stock
-                    </th>
-
-                    <th style="padding:12px; text-align:left;">
-                        Action
-                    </th>
-
-                </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                <%
-                    List<Product> products =
-                        (List<Product>) request.getAttribute("products");
-
-                    if (products != null && !products.isEmpty()) {
-
-                        for (Product product : products) {
-                %>
-
-                <tr>
-
-                    <td style="padding:12px;">
-                        <%= product.getProductId() %>
-                    </td>
-
-                    <td style="padding:12px;">
-                        <%= product.getProductName() %>
-                    </td>
-
-                    <td style="padding:12px;">
-                        ₹<%= String.format("%.2f", product.getPrice()) %>
-                    </td>
-
-                    <td style="padding:12px;">
-                        <%= product.getStock() %>
-                    </td>
-
-                    <td style="padding:12px;">
-
-                        <a href="${pageContext.request.contextPath}/admin/edit-product?id=<%= product.getProductId() %>"
-   class="primary-btn">
-    Edit
-</a>
-
-                        <a href="${pageContext.request.contextPath}/admin/delete-product?id=<%= product.getProductId() %>"
-   class="primary-btn"
-   onclick="return confirm('Are you sure you want to delete this product?');">
-    Delete
-</a>
-
-                    </td>
-
-                </tr>
-
-                <%
-                        }
-
-                    } else {
-                %>
-
-                <tr>
-
-                    <td colspan="5"
-                        style="padding:30px; text-align:center;">
-
-                        No products found.
-
-                    </td>
-
-                </tr>
-
-                <%
-                    }
-                %>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    <br>
-
-
-    <a href="${pageContext.request.contextPath}/admin/add-product"
-       class="primary-btn">
-
-        + Add Product
-
+                        <h3>
+                        <a href="product-details?id=<%= product.getProductId() %>">
+        <%= product.getProductName() %>
     </a>
+</h3>
+                        <p>
+                            <%= product.getDescription() %>
+                        </p>
 
+                        <div class="product-bottom">
+
+                            <strong>
+                                ₹<%= product.getPrice() %>
+                            </strong>
+
+                            <span>
+                                Stock: <%= product.getStock() %>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <%
+                    }
+
+                } else {
+            %>
+
+                <div class="offer-section">
+
+                    <h2>
+                        No products available
+                    </h2>
+
+                    <p>
+                        Products will appear here once they are added.
+                    </p>
+
+                </div>
+
+            <%
+                }
+            %>
+
+        </div>
+
+    </section>
 
 </main>
 
@@ -209,7 +301,7 @@
         </h2>
 
         <p>
-            Admin Management Panel
+            Your modern online shopping destination.
         </p>
 
     </div>
